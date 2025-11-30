@@ -10,6 +10,8 @@ TagManager:
   - Footsteps/Wood
   - Environment
   - Key
+  - LockedDoor
+  - UnlockedDoor
   - Door
   layers:
   - Default

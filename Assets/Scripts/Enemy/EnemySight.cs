@@ -1,18 +1,22 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemySight : MonoBehaviour
 {
     public float coneAngle = 90f;
-    public float sightDistance = 20f;
+    public float sightDistance = 10f;
     private LayerMask obstacleMask;
     public List<Transform> objectsInSight = new List<Transform>();
     public bool playerFound = false;
 
+    public bool doorToOpen = false;
+
+    private float lastInteractionTimeDoor = 0f;
+    private float interactionCooldownDoor = 1f;
+
     private void Start()
     {
-        obstacleMask = LayerMask.GetMask("Default", "Walls", "Environment", "Player");
+        obstacleMask = LayerMask.GetMask("Default", "Walls", "Environment", "Player", "Interactable");
     }
 
     private void Update()
@@ -61,6 +65,26 @@ public class EnemySight : MonoBehaviour
                         {
                             playerFound = true;
                             //Debug.Log($"Player detected: {collider.name} at angle {angle} degrees");
+                        }
+
+                        if (collider.CompareTag("UnlockedDoor"))
+                        {
+                            Vector3 closestPoint = collider.ClosestPoint(origin);
+                            float distanceToDoor = Vector3.Distance(origin, closestPoint);
+
+                            if (distanceToDoor < 1.5f) // Increased slightly for better UX
+                            {
+                                if (Time.time - lastInteractionTimeDoor >= interactionCooldownDoor)
+                                {
+                                    Interactable interactable = collider.GetComponent<Interactable>();
+                                    UnlockedDoor door = interactable.GetComponent<UnlockedDoor>();
+                                    if (interactable != null && !door.doorOpen)
+                                    {
+                                        interactable.BaseInteract();
+                                        lastInteractionTimeDoor = Time.time; // Reset the timer
+                                    }
+                                }
+                            }
                         }
 
                         Debug.DrawRay(origin, targetDirection * distance, Color.green, 0.1f);

@@ -69,15 +69,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Menu",
-                    "type": "Button",
-                    "id": "9e176460-6ff4-4038-833e-0ad11d836e11",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Interact",
                     "type": "Button",
                     "id": "c878cf7f-2339-4643-ba07-d9c857985d14",
@@ -97,17 +88,6 @@
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "39ae34cd-a7cd-48ce-912e-802f8efdde32",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Menu",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "a8cd104d-9858-408b-85fa-ba06fa5d7916",
@@ -358,7 +338,7 @@
                     "name": "Submit",
                     "type": "Button",
                     "id": "4062b0a2-2ca4-45a3-9caa-814b2cbf3f44",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -367,7 +347,7 @@
                     "name": "Cancel",
                     "type": "Button",
                     "id": "f53dea61-715b-405e-a1b7-45b5083d88fc",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -431,6 +411,15 @@
                     "type": "PassThrough",
                     "id": "505c75cb-d088-4eb6-b2b7-a57ae69b0b1e",
                     "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Menu",
+                    "type": "Button",
+                    "id": "8378e086-638d-4aaa-bff6-795a46735800",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -852,6 +841,17 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "df47d967-eaf0-450b-9b3d-79a69573a37b",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Menu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

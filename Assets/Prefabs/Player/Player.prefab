@@ -188,6 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fef11d95f459f946b570bae46422e18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  settingsPanel: {fileID: 0}
 --- !u!114 &8380790779939682534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -269,6 +270,8 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 64
+  keyText: {fileID: 0}
+  keys: 0
 --- !u!114 &2458610734844348996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -394,7 +397,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5276785297126831289
 Transform:
   m_ObjectHideFlags: 0
@@ -526,7 +529,7 @@ Transform:
   m_GameObject: {fileID: 7525258512120523064}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0.175}
+  m_LocalPosition: {x: 0, y: 0.5, z: -0.245}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -573,7 +576,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: e3c63d38db0a62244a6cdd0c11be92eb, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1

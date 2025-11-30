@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 7643412256555252060}
   m_Layer: 6
   m_Name: DootModel
-  m_TagString: Door
+  m_TagString: LockedDoor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

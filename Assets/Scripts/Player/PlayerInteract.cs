@@ -47,7 +47,7 @@ public class PlayerInteract : MonoBehaviour
                         keys++;
                         interactable.BaseInteract();
                     }
-                    else if (interactable.CompareTag("Door"))
+                    else if (interactable.CompareTag("LockedDoor"))
                     {
                         if (keys > 0)
                         {
@@ -56,18 +56,22 @@ public class PlayerInteract : MonoBehaviour
                         }
                         else
                         {
-                            StartCoroutine(changePromptMessage(interactable));
+                            StartCoroutine(changePromptMessageLockedDoor(interactable));
                         }
+                    }
+                    else if (interactable.CompareTag("UnlockedDoor"))
+                    {
+                        interactable.BaseInteract();
                     }
                 }
             }
         }
     }
 
-    IEnumerator changePromptMessage(Interactable interactable)
+    IEnumerator changePromptMessageLockedDoor(Interactable interactable)
     {
         string oldPrompt = interactable.promptMessage;
-        interactable.promptMessage = "Door Locked";
+        interactable.promptMessage = "Door locked. Open with key";
         yield return new WaitForSeconds(1f);
         interactable.promptMessage = oldPrompt;
     }

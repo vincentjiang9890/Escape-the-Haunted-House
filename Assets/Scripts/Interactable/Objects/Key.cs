@@ -4,7 +4,7 @@ public class Key : Interactable
 {
     void Start()
     {
-        promptMessage = "Pick Up Key";
+        promptMessage = "[E] Pick Up Key";
     }
 
     void Update()

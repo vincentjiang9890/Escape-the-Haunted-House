@@ -267,7 +267,7 @@ public class PlayerMotor : MonoBehaviour
                         footstepAudioSource.PlayOneShot(grassClips[UnityEngine.Random.Range(0, grassClips.Length - 1)]);
                         break;
                     default:
-                        footstepAudioSource.PlayOneShot(woodClips[UnityEngine.Random.Range(0, woodClips.Length - 1)]);
+                        footstepAudioSource.PlayOneShot(woodClips[UnityEngine.Random.Range(0, tileClips.Length - 1)]);
                         break;
                 }
             }

@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine.AI;
 using System;
 using JetBrains.Annotations;
+using static UnityEngine.UI.Image;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -12,22 +13,22 @@ public class EnemyAI : MonoBehaviour
     private Transform player;
     private Animator animator;
 
-    public LayerMask environmentMask, playerMask;
+    public LayerMask environmentMask, playerMask, doorMask;
     public EnemySight sight;
     public bool isMoving = false;
     public bool isSearching = false;
     public bool isChasing = false;
 
-    private float walkSpeed = 2f;
-    private float runSpeed = 5f;
+    private float walkSpeed = 1.5f;
+    private float runSpeed = 3f;
 
     //roam
     public Vector3 walkPoint;
     public bool walkPointSet;
-    public float walkPointRange = 5;
+    public float walkPointRange = 5f;
 
     //states
-    private float attackRange = 1.5f;
+    private float attackRange = 1f;
     public float sightRange;
     public bool playerInSightRange, playerInAttackRange;
     private float sightTimer;
@@ -111,6 +112,9 @@ public class EnemyAI : MonoBehaviour
 
         animator.SetBool("isRunning", isMoving && agent.speed == runSpeed);
         animator.SetBool("isWalking", isMoving && agent.speed == walkSpeed);
+
+        
+       
     }
 
     private void UpdateStateConditions()
@@ -218,13 +222,17 @@ public class EnemyAI : MonoBehaviour
         if (!walkPointSet) SearchResultWalkPoint();
 
         if (walkPointSet)
+        {
+            agent.isStopped = false;
             agent.SetDestination(walkPoint);
+        }
 
         agent.speed = walkSpeed;
 
         if (walkPointSet && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
             walkPointSet = false;
+            agent.isStopped = true;
         }
     }
 
@@ -234,22 +242,24 @@ public class EnemyAI : MonoBehaviour
         for (int i = 0; i < 30; i++)
         {
             float randomZ = UnityEngine.Random.Range(-walkPointRange, walkPointRange);
+            float randomY = UnityEngine.Random.Range(-3f, 3f);
             float randomX = UnityEngine.Random.Range(-walkPointRange, walkPointRange);
+            
 
             Vector3 randomPoint = new Vector3(
                 transform.position.x + randomX,
-                transform.position.y + 10f, // Start above
+                transform.position.y + randomY, // Start above
                 transform.position.z + randomZ
             );
 
             // Raycast downward to find the ground
-            if (Physics.Raycast(randomPoint, Vector3.down, out RaycastHit hit, 20f, environmentMask))
+            if (Physics.Raycast(randomPoint, Vector3.down, out RaycastHit hit, 6f, environmentMask))
             {
                 // Now check if this point is on NavMesh
                 if (NavMesh.SamplePosition(hit.point, out NavMeshHit navHit, 1.0f, NavMesh.AllAreas))
                 {
                     walkPoint = navHit.position;
-                    //Debug.Log(" walkpoint set");
+                    Debug.Log(walkPoint);
                     walkPointSet = true;
                     return;
                 
@@ -377,7 +387,7 @@ public class EnemyAI : MonoBehaviour
         if (walkPointSet)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawSphere(walkPoint, 0.3f);
+            Gizmos.DrawSphere(walkPoint, 0.15f);
             Gizmos.DrawLine(transform.position, walkPoint);
         }
     }
