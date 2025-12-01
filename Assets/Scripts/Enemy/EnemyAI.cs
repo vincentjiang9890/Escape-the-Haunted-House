@@ -5,6 +5,8 @@ using UnityEngine.AI;
 using System;
 using JetBrains.Annotations;
 using static UnityEngine.UI.Image;
+using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -28,7 +30,7 @@ public class EnemyAI : MonoBehaviour
     public float walkPointRange = 5f;
 
     //states
-    private float attackRange = 1f;
+    private float attackRange = .75f;
     public float sightRange;
     public bool playerInSightRange, playerInAttackRange;
     private float sightTimer;
@@ -40,9 +42,13 @@ public class EnemyAI : MonoBehaviour
     [Header("Footstep Params")]
     [SerializeField] private bool useFootsteps = true;
     [SerializeField] private float baseStepSpeed = 0.5f;
-    [SerializeField] private float sprintStepMultiplier = 0.3f;
+    [SerializeField] private float sprintStepMultiplier = 0.2f;
     [SerializeField] private AudioSource footstepAudioSource = default;
     [SerializeField] private AudioClip[] woodClips = default;
+
+    [Header("Jumpscare Params")]
+    [SerializeField] private AudioSource jumpscareAudioSource = default;
+    [SerializeField] private AudioClip jumpscareAudio = default;
 
     private float footstepTimer = 0;
     private float GetCurrentOffset => isChasing ? baseStepSpeed * sprintStepMultiplier : baseStepSpeed;
@@ -78,7 +84,7 @@ public class EnemyAI : MonoBehaviour
         switch (currentState)
         {
             case EnemyState.Roaming:
-                sight.coneAngle = 90f;
+                sight.coneAngle = 150f;
                 Roaming();
                 break;
             case EnemyState.Processing:
@@ -88,7 +94,7 @@ public class EnemyAI : MonoBehaviour
                 Search();
                 break;
             case EnemyState.Chasing:
-                sight.coneAngle = 120f;
+                sight.coneAngle = 180f;
                 Chase();
                 break;
             case EnemyState.Attacking:
@@ -232,7 +238,18 @@ public class EnemyAI : MonoBehaviour
         if (walkPointSet && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
             walkPointSet = false;
+            StartCoroutine(EnemyStop(1f));
+        }
+    }
+
+    private IEnumerator EnemyStop(float duration)
+    {
+        float time = 0;
+        while (time < duration)
+        {
             agent.isStopped = true;
+            time += Time.deltaTime;
+            yield return null;
         }
     }
 
@@ -259,7 +276,7 @@ public class EnemyAI : MonoBehaviour
                 if (NavMesh.SamplePosition(hit.point, out NavMeshHit navHit, 1.0f, NavMesh.AllAreas))
                 {
                     walkPoint = navHit.position;
-                    Debug.Log(walkPoint);
+                    //Debug.Log(walkPoint);
                     walkPointSet = true;
                     return;
                 
@@ -368,13 +385,42 @@ public class EnemyAI : MonoBehaviour
 
     private void Attack()
     {
-        agent.speed = 0f;
-        agent.acceleration = 0f;
-        //agent.SetDestination(transform.position);
+        //agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+        //agent.ResetPath();
+        agent.enabled = false;
 
-        transform.LookAt(player);
-        player.transform.LookAt(transform);
-        //kill player
+        animator.SetBool("isAttacking", true);
+        jumpscareAudioSource.PlayOneShot(jumpscareAudio);
+
+
+        Camera playerCamera = player.GetComponentInChildren<Camera>();
+
+        InputManager inputManager = player.GetComponent<InputManager>();
+        inputManager.playerControls.Disable();
+        inputManager.enabled = false;
+
+        PlayerLook playerLook = player.GetComponent<PlayerLook>();
+        if (playerLook != null)
+        {
+            playerLook.enabled = false;
+        }
+
+        Vector3 positionInFront = transform.position + transform.forward * .9f + Vector3.up * .2f;
+        
+
+        player.transform.position = positionInFront;
+        //player.transform.LookAt(transform);
+        player.transform.LookAt(transform.position + Vector3.up * .45f);
+        
+        StartCoroutine(WaitTilEndScreen());
+    }
+
+    IEnumerator WaitTilEndScreen()
+    {
+        yield return new WaitForSeconds(jumpscareAudio.length);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+
     }
 
     private void OnDrawGizmosSelected()
@@ -405,10 +451,10 @@ public class EnemyAI : MonoBehaviour
                 switch (hit.collider.tag)
                 {
                     case "Footsteps/Wood":
-                        footstepAudioSource.PlayOneShot(woodClips[UnityEngine.Random.Range(0, woodClips.Length - 1)]);
+                        footstepAudioSource.PlayOneShot(woodClips[UnityEngine.Random.Range(0, woodClips.Length - 1)], 5f);
                         break;
                     default:
-                        footstepAudioSource.PlayOneShot(woodClips[UnityEngine.Random.Range(0, woodClips.Length - 1)]);
+                        footstepAudioSource.PlayOneShot(woodClips[UnityEngine.Random.Range(0, woodClips.Length - 1)], 5f);
                         break;
                 }
             }

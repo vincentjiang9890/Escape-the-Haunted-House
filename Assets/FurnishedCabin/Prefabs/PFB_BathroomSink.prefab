@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 33000012250347890}
   - component: {fileID: 23000011704716482}
   - component: {fileID: 64000010704572400}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: doorL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 4000013137938756}
   - component: {fileID: 33000014190633528}
   - component: {fileID: 23000010493942040}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: BathroomSink_Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 4000013492317270}
   - component: {fileID: 33000010768653298}
   - component: {fileID: 23000012916950674}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: BathroomSink_Bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -290,7 +290,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4000012777636056}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: grp_doorL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +325,7 @@ GameObject:
   - component: {fileID: 33000013829359190}
   - component: {fileID: 23000011685650716}
   - component: {fileID: 64000011518853142}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: doorR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -556,7 +556,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4000012158789550}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: grp_doorR
   m_TagString: Untagged
   m_Icon: {fileID: 0}

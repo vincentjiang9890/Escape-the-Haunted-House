@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EnemySight : MonoBehaviour
 {
-    public float coneAngle = 90f;
+    public float coneAngle = 150f;
     public float sightDistance = 10f;
     private LayerMask obstacleMask;
     public List<Transform> objectsInSight = new List<Transform>();
@@ -72,7 +72,7 @@ public class EnemySight : MonoBehaviour
                             Vector3 closestPoint = collider.ClosestPoint(origin);
                             float distanceToDoor = Vector3.Distance(origin, closestPoint);
 
-                            if (distanceToDoor < 1.5f) // Increased slightly for better UX
+                            if (distanceToDoor < 1.75f) // Increased slightly for better UX
                             {
                                 if (Time.time - lastInteractionTimeDoor >= interactionCooldownDoor)
                                 {
@@ -92,7 +92,7 @@ public class EnemySight : MonoBehaviour
                     else
                     {
                         // Something is blocking the view
-                        //Debug.DrawRay(origin, targetDirection * distance, Color.red, 0.1f);
+                        //Debug.DrawRay(origin, targetDirection * distance, Color.orange, 0.1f);
                     }
                 }
             }

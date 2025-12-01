@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LockedDoor : Interactable
 {
@@ -10,9 +11,12 @@ public class LockedDoor : Interactable
     private float currentRotation;
     private Vector3 initialRotation;
 
+    public int keysNeeded = 3;
+
     void Start()
     {
         promptMessage = "[E] Open Door";
+        variable = keysNeeded;
         pivot = transform.transform;
         initialRotation = pivot.localEulerAngles;
         currentRotation = initialRotation.y;
@@ -36,8 +40,10 @@ public class LockedDoor : Interactable
 
     protected override void Interact()
     {
+
         doorOpen = true;
-        
         //gameObject.GetComponent<Animator>().SetBool("isOpen", doorOpen);
     }
+
+    
 }

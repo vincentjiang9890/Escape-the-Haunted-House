@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 public class PlayerInteract : MonoBehaviour
 {
     private Camera cam;
@@ -11,7 +12,13 @@ public class PlayerInteract : MonoBehaviour
 
     public TextMeshProUGUI keyText;
     public int keys;
-    
+
+    [SerializeField] private AudioSource interactableAudioSource = default;
+    [SerializeField] private AudioClip doorOpenAudio = default;
+    [SerializeField] private AudioClip useKeyLockedDoorAudio = default;
+    [SerializeField] private AudioClip keyAudio = default;
+    [SerializeField] private AudioClip lockedDoorAudio = default;
+
     void Start()
     {
         //HIDE THE MOUSE
@@ -21,6 +28,8 @@ public class PlayerInteract : MonoBehaviour
         cam = GetComponent<PlayerLook>().cam;
         playerUI = GetComponent<PlayerUI>();
         inputManager = GetComponent<InputManager>();
+
+        interactableAudioSource.volume = 0.5f;
     }
     void Update()
     {
@@ -45,17 +54,35 @@ public class PlayerInteract : MonoBehaviour
                     if (interactable.CompareTag("Key"))
                     {
                         keys++;
+                        interactableAudioSource.PlayOneShot(keyAudio);
                         interactable.BaseInteract();
                     }
                     else if (interactable.CompareTag("LockedDoor"))
                     {
-                        if (keys > 0)
+                        if (interactable.variable == 1 && keys > 0)
                         {
                             keys--;
+                            interactable.variable--;
+
+                            interactableAudioSource.PlayOneShot(useKeyLockedDoorAudio);
+                            interactableAudioSource.PlayOneShot(doorOpenAudio);
                             interactable.BaseInteract();
+
+                            StartCoroutine(WaitTilEndScreen());
+
+                        }
+                        else if (interactable.variable > 1 && keys > 0)
+                        {
+                            
+                            keys--;
+                            interactable.variable--;
+                            interactableAudioSource.PlayOneShot(useKeyLockedDoorAudio);
+
+                            StartCoroutine(changePromptMessageLockedDoor(interactable));
                         }
                         else
                         {
+                            interactableAudioSource.PlayOneShot(lockedDoorAudio);
                             StartCoroutine(changePromptMessageLockedDoor(interactable));
                         }
                     }
@@ -71,8 +98,15 @@ public class PlayerInteract : MonoBehaviour
     IEnumerator changePromptMessageLockedDoor(Interactable interactable)
     {
         string oldPrompt = interactable.promptMessage;
-        interactable.promptMessage = "Door locked. Open with key";
+        interactable.promptMessage = "Door locked. Keys needed to open: " + interactable.variable;
         yield return new WaitForSeconds(1f);
         interactable.promptMessage = oldPrompt;
+    }
+
+    IEnumerator WaitTilEndScreen()
+    {
+        yield return new WaitForSeconds(.75f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 2);
+
     }
 }

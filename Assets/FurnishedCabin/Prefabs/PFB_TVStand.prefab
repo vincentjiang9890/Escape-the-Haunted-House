@@ -307,7 +307,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4000012614448490}
   - component: {fileID: 65000011051335022}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: 'doorR_interact '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -611,7 +611,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4000011238391556}
   - component: {fileID: 65000014288398604}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: doorL_interact
   m_TagString: Untagged
   m_Icon: {fileID: 0}

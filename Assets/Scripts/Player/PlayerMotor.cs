@@ -5,25 +5,29 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.Windows;
 using static EnemyAI;
+using UnityEngine.InputSystem.XR;
 
 public class PlayerMotor : MonoBehaviour
 {
     private CharacterController controller;
     private CapsuleCollider playerCollider;
+    public Camera playerCamera;
     private Vector3 playerVelocity;
     private Vector2 currentInput;
 
     private InputManager inputManager;
 
-    public float speed = 3f;
-    public float walkSpeed = 3f;
+    public float speed = 2.5f;
+    public float walkSpeed = 2.5f;
     public float sprintSpeed = 5f;
-    public float crouchSpeed = 2f;
-    private bool isCrouching = false;
+    public float crouchSpeed = 1f;
+    public bool isCrouching = false;
+    public bool stayCrouch = false;
     private bool isSprinting = false;
+    public bool isWalking = true;
     private bool isMoving = false;
 
-    private float maxStamina = 100f;
+    private float maxStamina = 40f;
     public float stamina;
     [SerializeField] private float drainMultiplier = 20f;
     private float staminaGainTimer = 1f;
@@ -43,7 +47,7 @@ public class PlayerMotor : MonoBehaviour
 
     public bool isGrounded;
     public float gravity = -9.8f;
-    public float jumpHeight = 2f;
+    public float jumpHeight = 1f;
 
     [Header("Footstep Params")]
     [SerializeField] private bool useFootsteps = true;
@@ -63,6 +67,7 @@ public class PlayerMotor : MonoBehaviour
         controller = GetComponent<CharacterController>();
         playerCollider = GetComponent<CapsuleCollider>();
         inputManager = GetComponent<InputManager>();
+
         stamina = maxStamina;
 
         frontStamina.color = new Color(frontStamina.color.r, frontStamina.color.g, frontStamina.color.b, 0f);
@@ -215,34 +220,98 @@ public class PlayerMotor : MonoBehaviour
     public void Sprint()
     {
         isSprinting = true;
+        isWalking = false;
         isCrouching = false;
         speed = sprintSpeed;
-        footstepAudioSource.volume = .75f;
+        footstepAudioSource.volume = 1;
     }
     public void Walk()
     {
         isSprinting = false;
-        isCrouching = false;
-        speed = walkSpeed;
-        footstepAudioSource.volume = .5f;
+        
+        if (!stayCrouch)
+        {
+            isWalking = true;
+            isCrouching = false;
 
-        playerCollider.height = 2;
-        Vector3 crouchHeight = Vector3.zero;
-        playerCollider.center = crouchHeight;
+            playerCollider.height = 2;
+            controller.height = 2;
+
+            Vector3 crouchHeight = Vector3.zero;
+            playerCollider.center = crouchHeight;
+            controller.center = crouchHeight;
+
+            StartCoroutine(SmoothCameraHeight(0.5f, 0.2f));
+
+            speed = walkSpeed;
+            footstepAudioSource.volume = .7f;
+        }
+
     }
+
     public void Crouch()
     {
         if (isGrounded)
         {
             isSprinting = false;
+            isWalking = false;
             isCrouching = true;
             speed = crouchSpeed;
-            footstepAudioSource.volume = .25f;
+            footstepAudioSource.volume = .2f;
         }
-        playerCollider.height = 1;
+        playerCollider.height = 0.5f;
+        controller.height = 0.5f;
         Vector3 crouchHeight = Vector3.zero;
         crouchHeight.y = -0.5f;
         playerCollider.center = crouchHeight;
+        controller.center = crouchHeight;
+
+        StartCoroutine(SmoothCameraHeight(-0.5f, 0.2f));
+    }
+
+    private IEnumerator SmoothCameraHeight(float targetY, float duration)
+    {
+        float time = 0;
+        Vector3 startPosition = playerCamera.transform.localPosition;
+        Vector3 targetPosition = new Vector3(startPosition.x, targetY, startPosition.z);
+
+        while (time < duration)
+        {
+            playerCamera.transform.localPosition = Vector3.Lerp(
+                startPosition,
+                targetPosition,
+                time / duration
+            );
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        playerCamera.transform.localPosition = targetPosition;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("CanHide"))
+        {
+            stayCrouch = true;
+            Debug.Log("UNDER.");
+            Crouch();
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("CanHide"))
+        {
+            stayCrouch = false;
+            if (inputManager.holdingCrouch == false)
+            {
+                Walk();
+            }
+
+
+            Debug.Log("CANHDE LEFT ");
+        }
     }
 
     private void HandleFootsteps()
@@ -258,7 +327,7 @@ public class PlayerMotor : MonoBehaviour
                 switch(hit.collider.tag)
                 {
                     case "Footsteps/Wood":
-                        footstepAudioSource.PlayOneShot(woodClips[UnityEngine.Random.Range(0, woodClips.Length - 1)]);
+                        footstepAudioSource.PlayOneShot(woodClips[UnityEngine.Random.Range(0, woodClips.Length - 1)], 1.25f);
                         break;
                     case "Footsteps/Tile":
                         footstepAudioSource.PlayOneShot(tileClips[UnityEngine.Random.Range(0, tileClips.Length - 1)]);
@@ -267,7 +336,7 @@ public class PlayerMotor : MonoBehaviour
                         footstepAudioSource.PlayOneShot(grassClips[UnityEngine.Random.Range(0, grassClips.Length - 1)]);
                         break;
                     default:
-                        footstepAudioSource.PlayOneShot(woodClips[UnityEngine.Random.Range(0, tileClips.Length - 1)]);
+                        footstepAudioSource.PlayOneShot(woodClips[UnityEngine.Random.Range(0, tileClips.Length - 1)], 1.25f);
                         break;
                 }
             }

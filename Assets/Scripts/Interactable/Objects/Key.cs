@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class Key : Interactable
 {
+
+    
+
     void Start()
     {
         promptMessage = "[E] Pick Up Key";
@@ -15,5 +18,6 @@ public class Key : Interactable
     {
         //Debug.Log("Interacted with " + gameObject.name);
         gameObject.SetActive(false);
+
     }
 }

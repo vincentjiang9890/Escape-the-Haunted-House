@@ -118,7 +118,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4000010527607128}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: grpDraw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -253,7 +253,7 @@ GameObject:
   - component: {fileID: 33000011290940526}
   - component: {fileID: 23000011847631352}
   - component: {fileID: 64000012154979338}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: draw
   m_TagString: Untagged
   m_Icon: {fileID: 0}

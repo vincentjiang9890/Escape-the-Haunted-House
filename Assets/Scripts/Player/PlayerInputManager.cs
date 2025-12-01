@@ -15,6 +15,8 @@ public class InputManager : MonoBehaviour
     [SerializeField] GameObject settingsPanel;
     private bool isPaused = false;
 
+    public bool holdingCrouch = false;
+
     void Awake()
     {
         playerInput = new PlayerInput();
@@ -31,8 +33,16 @@ public class InputManager : MonoBehaviour
         playerControls.Sprint.performed += ctx => motor.Sprint();
         playerControls.Sprint.canceled += ctx => motor.Walk();
 
-        playerControls.Crouch.performed += ctx => motor.Crouch();
-        playerControls.Crouch.canceled += ctx => motor.Walk();
+        playerControls.Crouch.performed += ctx =>
+        {
+            motor.Crouch();
+            holdingCrouch = true;
+        };
+        playerControls.Crouch.canceled += ctx =>
+        {
+            motor.Walk();
+            holdingCrouch = false;
+        };
     }
 
     private void LateUpdate()
