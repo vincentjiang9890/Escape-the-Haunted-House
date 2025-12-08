@@ -8,3 +8,6 @@ We are going to make a singleplayer horror game where you must escape from a pow
 
 ### Optional Prerequisites
  - https://www.blender.org/download/
+
+### Play Here
+ - https://unmovedbyloss.itch.io/escape-the-haunted-house
